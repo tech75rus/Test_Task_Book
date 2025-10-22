@@ -20,7 +20,7 @@ services:
     volumes:
       - ./backend:/var/www/backend
     environment:
-      DATABASE_URL: "mysql://userBook:1234@mysql:3306/books?serverVersion=8.0&charset=utf8mb4"
+      DATABASE_URL: "mysql://user:1234@mysql:3306/books?serverVersion=8.0&charset=utf8mb4"
       APP_ENV: "${APP_ENV:-prod}"
       APP_DEBUG: "${APP_DEBUG:-0}"
     networks:
@@ -34,7 +34,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootPassword
       MYSQL_DATABASE: books
-      MYSQL_USER: userBook
+      MYSQL_USER: user
       MYSQL_PASSWORD: 1234
     volumes:
       - mysql_data:/var/lib/mysql
@@ -47,7 +47,7 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
-      PMA_USER: userBook
+      PMA_USER: user
       PMA_PASSWORD: 1234
     ports:
       - "8080:80"
