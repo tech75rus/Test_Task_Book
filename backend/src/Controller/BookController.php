@@ -14,8 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/v1/books')]
 class BookController extends AbstractController
 {
-    // GET /api/v1/books - список книг с пагинацией
-    #[Route('', methods: ['GET'])]
+    // GET /api/v1/books/list - список книг с пагинацией
+    #[Route('/list', methods: ['GET'])]
     public function index(Request $request, BookRepository $repository): JsonResponse
     {
         $page = max(1, (int)$request->query->get('page', 1));     // минимум 1
@@ -82,8 +82,8 @@ class BookController extends AbstractController
         ], 201);
     }
 
-    // PUT /api/v1/books/{id} - обновить книгу
-    #[Route('/{id}', methods: ['PUT'])]
+    // PUT /api/v1/books/update/{id} - обновить книгу
+    #[Route('/update/{id}', methods: ['PUT'])]
     public function update(Book $book, Request $request, EntityManagerInterface $em): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
