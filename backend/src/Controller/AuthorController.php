@@ -23,18 +23,19 @@ class AuthorController extends AbstractController
     #[Route('', methods: ['GET'])]
     public function index(AuthorRepository $repository): JsonResponse
     {
-        $authors = $repository->findAll();
-        
+        $authors = $repository->findAllWithBookCount();
+
         $data = [];
         foreach ($authors as $author) {
             $data[] = [
-                'id' => $author->getId(),
-                'firstName' => $author->getFirstName(),
-                'lastName' => $author->getLastName(),
-                'birthDate' => $author->getBirthDate()->format('Y-m-d'),
+                'id' => $author['id'],
+                'firstName' => $author['firstName'],
+                'lastName' => $author['lastName'],
+                'birthDate' => $author['birthDate']->format('Y-m-d'),
+                'bookCount' => $author['bookCount'],
             ];
         }
-        
+
         return $this->json($data);
     }
 
