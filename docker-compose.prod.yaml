@@ -1,0 +1,64 @@
+services:
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: symfony_author_book_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/prod/nginx/conf.d:/etc/nginx/conf.d
+      - ./backend:/var/www/backend
+    depends_on:
+      - backend
+    networks:
+      - symfony_author_book_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/dev/backend/Dockerfile
+    container_name: symfony_author_book_backend
+    volumes:
+      - ./backend:/var/www/backend
+    environment:
+      DATABASE_URL: "mysql://user:1234@mysql:3306/books?serverVersion=8.0&charset=utf8mb4"
+      APP_ENV: "${APP_ENV:-prod}"
+      APP_DEBUG: "${APP_DEBUG:-0}"
+    networks:
+      - symfony_author_book_network
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: symfony_author_book_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootPassword
+      MYSQL_DATABASE: books
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 1234
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - symfony_author_book_network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: symfony_author_book_phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: user
+      PMA_PASSWORD: 1234
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - symfony_author_book_network
+
+volumes:
+  mysql_data:
+
+networks:
+  symfony_author_book_network:
+    driver: bridge
